@@ -47,6 +47,6 @@ logs/
 # Model files (if any)
 *.h5
 *.pkl
-*.pth
+# *.pth
 *.pt
 *.onnx
