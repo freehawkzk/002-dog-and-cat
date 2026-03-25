@@ -1,6 +1,8 @@
 # Data directories
 data/
-
+.vs/
+Debug/
+Release/
 # Checkpoints (model weights)
 checkpoints/*
 !checkpoints/.gitkeep
@@ -56,8 +58,20 @@ runs/
 *.pkl
 *.pth
 *.onnx
+*.data
 
 # Training outputs
 output_*/
 training_metrics*.png
 *.png
+
+# VC
+*.opendb
+*.VC.db
+*.db
+*.pdb
+*.idb
+*.ipch
+*.db-shm
+*.db-wal
+*.aps
