@@ -62,7 +62,11 @@ class TrainingConfig:
             self.freeze_epochs = args.freeze_epochs if args and args.freeze_epochs is not None else 10
         
         # 设备配置
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        device_str = args.device if args and args.device else ('cuda' if torch.cuda.is_available() else 'cpu')
+        if device_str == 'cuda' and not torch.cuda.is_available():
+            print("警告: CUDA不可用，将使用CPU训练")
+            device_str = 'cpu'
+        self.device = torch.device(device_str)
         
         # 输出目录 - 保存到 checkpoints 文件夹
         self.output_dir = os.path.join('checkpoints', self.model_name)
@@ -792,6 +796,9 @@ if __name__ == '__main__':
     # 其他参数
     parser.add_argument('--data-dir', type=str, default='./data',
                        help='数据集目录 (默认: ./data)')
+    parser.add_argument('--device', type=str, default=None,
+                       choices=['cpu', 'cuda'],
+                       help='训练设备 (默认: 自动检测，优先使用cuda)')
     
     args = parser.parse_args()
     
@@ -815,6 +822,7 @@ if __name__ == '__main__':
     print(f"  Num Workers: {args.num_workers}")
     print(f"  Prefetch Factor: {args.prefetch_factor}")
     print(f"  Data Dir: {args.data_dir}")
+    print(f"  Device: {args.device if args.device else ('cuda' if torch.cuda.is_available() else 'cpu')}")
     if args.model == 'resnet18':
         print(f"  Freeze Epochs: {args.freeze_epochs}")
     print()

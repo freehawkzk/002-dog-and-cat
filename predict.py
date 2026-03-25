@@ -13,6 +13,10 @@ from torchvision import transforms
 from PIL import Image
 import matplotlib.pyplot as plt
 
+# 设置matplotlib支持中文显示
+plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'DejaVu Sans']
+plt.rcParams['axes.unicode_minus'] = False
+
 from model import get_model, get_model_info
 
 
@@ -129,11 +133,18 @@ def main():
                        help='不显示可视化结果')
     parser.add_argument('--save-result', type=str, default=None,
                        help='保存预测结果图的路径')
+    parser.add_argument('--device', type=str, default=None,
+                       choices=['cpu', 'cuda'],
+                       help='推理设备 (默认: 自动检测，优先使用cuda)')
     
     args = parser.parse_args()
     
     # 设备
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device_str = args.device if args.device else ('cuda' if torch.cuda.is_available() else 'cpu')
+    if device_str == 'cuda' and not torch.cuda.is_available():
+        print("警告: CUDA不可用，将使用CPU推理")
+        device_str = 'cpu'
+    device = torch.device(device_str)
     print(f"使用设备: {device}")
     
     # 检查图片是否存在
@@ -180,7 +191,24 @@ def interactive_mode():
     print("猫狗分类器 - 交互模式")
     print("=" * 50)
     
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # 选择设备
+    print("\n可用设备:")
+    print("  1. cpu  - CPU推理")
+    if torch.cuda.is_available():
+        print("  2. cuda - GPU推理 (推荐)")
+    else:
+        print("  2. cuda - GPU推理 (不可用)")
+    
+    device_choice = input("\n请选择设备 (cpu/cuda，默认自动): ").strip().lower()
+    if device_choice == 'cuda' and not torch.cuda.is_available():
+        print("CUDA不可用，使用CPU")
+        device_str = 'cpu'
+    elif device_choice in ['cpu', 'cuda']:
+        device_str = device_choice
+    else:
+        device_str = 'cuda' if torch.cuda.is_available() else 'cpu'
+    
+    device = torch.device(device_str)
     print(f"设备: {device}")
     
     # 选择模型
