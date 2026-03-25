@@ -1,6 +1,9 @@
 # Data directories
 data/
-runs/
+
+# Checkpoints (model weights)
+checkpoints/*
+!checkpoints/.gitkeep
 
 # Python
 __pycache__/
@@ -45,9 +48,16 @@ Thumbs.db
 *.log
 logs/
 
-# Model files (if any)
+# TensorBoard
+runs/
+
+# Model files (saved in checkpoints folder now)
 *.h5
 *.pkl
-# *.pth
-*.pt
+*.pth
 *.onnx
+
+# Training outputs
+output_*/
+training_metrics*.png
+*.png

@@ -1,0 +1,2 @@
+# This file ensures the checkpoints directory is tracked by git
+# Model weights will be saved here during training
